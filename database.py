@@ -1,5 +1,5 @@
 import sqlite3
-from random import random
+import random
 
 try:
     sqliteConnection = sqlite3.connect('Traccar_Client_Database.db')
@@ -56,18 +56,27 @@ def insert_into(RowID, EventValue, EventKey, TimesExecutes, QValues, Reward):
             sqliteConnection.close()
             print("The SQLite connection is closed")
 
+# def UpdateReward(SelectedEvent):
+#     sqliteConnection = sqlite3.connect('Traccar_Client_Database.db')
+#     cursor = sqliteConnection.cursor()
+#     Reward = 1/
 def getMaxValueEvent(stateId):
     stateId = str(stateId)
     try:
             sqliteConnection = sqlite3.connect('Traccar_Client_Database.db')
             cursor = sqliteConnection.cursor()
 
-            cursor.execute("SELECT rowNumber FROM Traccer_Client_Table WHERE stateId = %s AND"
-                           "(Qvalue = (MAX(Qvalue)))", (stateId))
-
+            cursor.execute("SELECT RowNumber FROM Traccar_Client_Table WHERE (QValues = (SELECT MAX(QValues) FROM Traccar_Client_Table))")
             numbers = cursor.fetchall()
-            index = random.choice(numbers)
+            MyList = []
+
+
+            for i in numbers:
+                MyList.append(i[0])
+
+            index = random.choice(MyList)
             cursor.close()
+
             return index
 
     except sqlite3.Error as error:
@@ -76,6 +85,4 @@ def getMaxValueEvent(stateId):
         if (sqliteConnection):
             sqliteConnection.close()
             print("The SQLite connection is closed")
-
-
 
