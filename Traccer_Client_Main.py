@@ -115,7 +115,7 @@ while not done:
         Q_Value = Reward + Gamma * MaxValue
 
         #Giving the new Q value to the event
-        setQValue(newState,Q_Value)
+        setQValue(Selected_event, Q_Value)
 
 
 

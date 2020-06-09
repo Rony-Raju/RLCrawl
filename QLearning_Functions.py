@@ -14,10 +14,12 @@ def getReward(selectedEvent_index):
     cursor = sqliteConnection.cursor()
 
 
-    x = cursor.execute("Select TimesExecuted FROM Traccer_Client_Table WHERE TimesExecuted = ?", [selectedEvent_index])
+    cursor.execute("Select TimesExecuted FROM Traccar_Client_Table WHERE TimesExecuted = ?", [selectedEvent_index])
+    x = cursor.fetchone()
+    res = int(''.join(map(str, x)))
 
     #One divided by the total number of times the event has been executed
-    reward = 1 / x
+    reward = 1 // res
 
     return reward
 
@@ -46,6 +48,9 @@ def setQValue(Event, Q_Value):
     sqliteConnection = sqlite3.connect('Traccar_Client_Database.db')
     cursor = sqliteConnection.cursor()
 
-    
+    Action = Event[0]['action']
+    State_ID = Event[0]['preconditon']['stateId']
 
+    cursor.execute("UPDATE Traccar_Client_Table SET Q_Value = ? WHERE (EventValue = ?) AND (EventKey = ?) ", [Q_Value], [Action], [State_ID])
+    sqliteConnection.commit()
 
